@@ -1,0 +1,22 @@
+---
+- name: Installer Docker sur la machine distante
+  hosts: all
+  become: yes
+
+  tasks:
+
+    - name: Mise à jour des paquets
+      apt:
+        update_cache: yes
+
+    - name: Installer Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Activer et démarrer Docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
+

@@ -1,0 +1,37 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_REGISTRY = 'mydockerregistry.com'
+        IMAGE_NAME = 'app_simple'
+    }
+
+    stages {
+
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                sh 'npm test' // Changez ceci selon le framework de test utilisé
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build("${IMAGE_NAME}:${BUILD_NUMBER}")
+                }
+            }
+        }
+
+        stage('Push to Docker Registry') {
+            steps {
+                script {
+                    docker.withRegistry("https://${DOCKER_REGISTRY}", 'docker-credentials') {
+                        docker.image("${IMAGE_NAME}:${BUILD_NUMBER}").push()
+                    }
+                }
+            }
+        }
+
+    }
+}

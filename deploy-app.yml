@@ -1,0 +1,15 @@
+---
+- name: Déployer l'application conteneurisée
+  hosts: all
+  become: yes
+
+  vars:
+    docker_image_name: "mydockerregistry.com/app_simple"
+
+  tasks:
+    - name: Lancer l'application conteneurisée
+      docker_container:
+        name: app-simple
+        image: "{{ docker_image_name }}:latest"
+        state: started
+        restart_policy: always
